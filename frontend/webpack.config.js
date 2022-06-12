@@ -1,13 +1,33 @@
 const path = require('path')
-//const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
-  entry: ['./client/index.js'], //'webpack-hot-middleware/client?reload=true', 
+  entry: ['./client/index.js'],  
   output: {
     path: path.join(__dirname, './public'),
     publicPath: '/',
     filename: 'bundle.js',
+  },
+  devServer: {
+    host: "0.0.0.0",
+    port: 3001,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    devMiddleware: {
+      index: true,
+      mimeTypes: { phtml: 'text/html' },
+      publicPath: path.join(__dirname, './public/bundle.js'),
+      serverSideRender: true,
+      writeToDisk: (filePath) => {
+        return !/hot-update/i.test(filePath);
+      },
+    },
+    historyApiFallback: true
+    // watchFiles: [
+    //   path.join(__dirname, './public/bundle.js'),
+    //   path.join(__dirname, '../backend/app.py'),
+    // ],
   },
   module: {
     rules: [
@@ -25,7 +45,5 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.css'],      
   },
-  plugins: [
-    //new webpack.HotModuleReplacementPlugin(),
-  ],
+  plugins: [],
 }
